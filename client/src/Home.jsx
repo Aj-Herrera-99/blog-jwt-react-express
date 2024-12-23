@@ -11,7 +11,7 @@ function Home() {
     const handleLogout = () => {
         axios({
             method: "POST",
-            url: "http://localhost:3000/api/logout",
+            url: "http://localhost:3000/users/logout",
             headers: {
                 "Content-Type": "application/json",
                 authorization: "Bearer " + currUser.accessToken,

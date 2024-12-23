@@ -6,13 +6,13 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 // importazioni routers
-const apiRouter = require("./routers/apiRouter")
+const usersRouter = require("./routers/usersRouter")
 const postsRouter = require("./routers/postsRouter")
 // * global middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", apiRouter)
+app.use("/users", usersRouter)
 app.use("/posts", postsRouter)
 
 // * apertura server

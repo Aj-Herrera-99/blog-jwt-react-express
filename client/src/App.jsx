@@ -29,7 +29,7 @@ function App() {
 
         axios({
             method: "post",
-            url: "http://localhost:3000/api/login",
+            url: "http://localhost:3000/users/login",
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({
                 username: loginData.username,
@@ -53,7 +53,7 @@ function App() {
 
         axios({
             method: "post",
-            url: "http://localhost:3000/api/signup",
+            url: "http://localhost:3000/users/signup",
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({ username, password }),
         })

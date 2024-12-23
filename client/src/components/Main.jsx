@@ -9,7 +9,7 @@ function Main({ currUser }) {
     useEffect(() => {
         Promise.all([
             fetch("http://localhost:3000/posts"),
-            fetch("http://localhost:3000/api/users"),
+            fetch("http://localhost:3000/users"),
         ])
             .then((responses) =>
                 Promise.all(responses.map((res) => res.json()))
@@ -26,6 +26,7 @@ function Main({ currUser }) {
         e.preventDefault();
         const userId = currUser.id;
         const content = e.target.querySelector("textarea").value;
+        e.target.querySelector("textarea").value = "";
         axios({
             method: "post",
             url: "http://localhost:3000/posts",
@@ -60,6 +61,8 @@ function Main({ currUser }) {
 
     return (
         <main className="flex px-8 text-xl grow bg-stone-800">
+            {/* todo: barra di ricerca, filtri per autore, data, ordine */}
+
             {/* todo: creare componente Post */}
             <section className="w-3/5">
                 {posts.map((post) => (
@@ -84,7 +87,7 @@ function Main({ currUser }) {
                             </span>
                             <span>Date: {post.date}</span>
                         </div>
-                        <div className="w-2/5 ml-2 overflow-hidden line-clamp-[6] grow">
+                        <div className="w-2/5 ml-2 overflow-hidden line-clamp-[6] grow hyphens-auto break-words ">
                             Content: {post.content}
                         </div>
                     </div>
@@ -103,7 +106,7 @@ function Main({ currUser }) {
                         id="new-post"
                         rows={5}
                         cols={50}
-                        className="p-2 resize"
+                        className="p-2 resize-none"
                     ></textarea>
                     <div className="text-end">
                         <button className="py-1 tracking-widest uppercase rounded-2xl">

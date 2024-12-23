@@ -1,13 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const verify = require("../middlewares/verifyToken");
 const users = require("../data/users");
 let refreshTokens = require("../data/refreshTokens");
 
-// * local middlewares
+router.get("/", (req, res) => {
+    const data = users.map((user) => ({
+        id: user.id,
+        username: user.username,
+        isAdmin: user.isAdmin,
+    }));
+    res.json(data);
+});
 
-// * api routes
 router.post("/signup", (req, res) => {
     const { username, email, password } = req.body;
     // * solo simulazione signup runtime, no override dei dati (fs module)
@@ -18,20 +25,14 @@ router.post("/signup", (req, res) => {
     ) {
         return res.status(409).json("You are already Registered!");
     }
-    const maxId = parseInt(findMaxId(users));
-    users.push({ id: String(maxId + 1), username, password, isAdmin: false });
-    console.log(users);
+    users.push({
+        id: uuidv4(),
+        username: username,
+        password: password,
+        isAdmin: false,
+    });
+    // console.log(users);
     res.json("You have signup successfully!");
-
-    function findMaxId(data) {
-        let maxId = 1;
-        for (let item of data) {
-            if (item.id > maxId) {
-                maxId = item.id;
-            }
-        }
-        return maxId;
-    }
 });
 
 router.post("/login", (req, res) => {
@@ -91,15 +92,6 @@ router.post("/refresh", (req, res) => {
             refreshToken: newRefreshToken,
         });
     });
-});
-
-router.get("/users", (req, res) => {
-    const data = users.map((user) => ({
-        id: user.id,
-        username: user.username,
-        isAdmin: user.isAdmin,
-    }));
-    res.json(data);
 });
 
 // functions
