@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Post from "./Post";
 
 function Main({ currUser }) {
     // states
@@ -21,7 +22,6 @@ function Main({ currUser }) {
     }, []);
 
     // actions
-    // TODO: submit new post con verifica token
     const submitNewPost = (e) => {
         e.preventDefault();
         const userId = currUser.id;
@@ -30,67 +30,31 @@ function Main({ currUser }) {
         axios({
             method: "post",
             url: "http://localhost:3000/posts",
-            headers: { "Content-Type": "application/json" },
-            data: JSON.stringify({ userId, content }),
-        })
-            .then((res) => res.data)
-            .then((data) => setPosts([data, ...posts]));
-    };
-
-    const removePost = (id, userId) => {
-        axios({
-            method: "delete",
-            url: `http://localhost:3000/posts/${id}/${userId}`,
             headers: {
                 "Content-Type": "application/json",
                 authorization: "Bearer " + currUser.accessToken,
             },
+            data: JSON.stringify({ userId, content }),
         })
-            .then((res) => {
-                console.log(res.data);
-                const newPosts = posts.filter((user) => user.id != id);
-                setPosts(newPosts);
-            })
-            .catch((err) => {
-                console.error(err.response.data);
-                if (err.status == 401) {
-                    navigate("/");
-                }
-            });
+            .then((res) => res.data)
+            .then((data) => setPosts([data, ...posts]))
+            .catch((err) => console.error(err.response.data));
     };
 
     return (
         <main className="flex px-8 text-xl grow bg-stone-800">
             {/* todo: barra di ricerca, filtri per autore, data, ordine */}
 
-            {/* todo: creare componente Post */}
             <section className="w-3/5">
                 {posts.map((post) => (
-                    <div
+                    <Post
                         key={post.id}
-                        className="mx-auto my-8 h-[190px] flex p-2 text-black bg-white rounded-xl relative"
-                    >
-                        {(currUser.isAdmin || currUser.id == post.userId) && (
-                            <i
-                                onClick={() => removePost(post.id, post.userId)}
-                                className="absolute text-red-500 fa-solid fa-xmark hover:scale-150 hover:drop-shadow-[0_0_2px_rgb(255,0,0)] transition-all"
-                            ></i>
-                        )}
-
-                        <div className="flex flex-col justify-around w-1/5 border-r border-r-stone-400">
-                            <span>
-                                Author:{" "}
-                                {
-                                    users.find((user) => user.id == post.userId)
-                                        .username
-                                }
-                            </span>
-                            <span>Date: {post.date}</span>
-                        </div>
-                        <div className="w-2/5 ml-2 overflow-hidden line-clamp-[6] grow hyphens-auto break-words ">
-                            Content: {post.content}
-                        </div>
-                    </div>
+                        post={post}
+                        posts={posts}
+                        setPosts={setPosts}
+                        users={users}
+                        currUser={currUser}
+                    ></Post>
                 ))}
             </section>
             {/* todo: creare componente PostForm */}
@@ -100,13 +64,15 @@ function Main({ currUser }) {
                     className="p-4 mx-16 rounded-xl bg-stone-700"
                 >
                     <p>
-                        <label htmlFor="new-post">What's on your mind</label>
+                        <label htmlFor="new-post" className="underline">
+                            What's on your mind
+                        </label>
                     </p>
                     <textarea
                         id="new-post"
                         rows={5}
                         cols={50}
-                        className="p-2 resize-none"
+                        className="p-2 my-2 rounded-md resize-none"
                     ></textarea>
                     <div className="text-end">
                         <button className="py-1 tracking-widest uppercase rounded-2xl">

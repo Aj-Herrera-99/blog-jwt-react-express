@@ -6,6 +6,7 @@ const verify = require("../middlewares/verifyToken");
 const users = require("../data/users");
 let refreshTokens = require("../data/refreshTokens");
 
+// index
 router.get("/", (req, res) => {
     const data = users.map((user) => ({
         id: user.id,
@@ -15,6 +16,7 @@ router.get("/", (req, res) => {
     res.json(data);
 });
 
+// jwt auth
 router.post("/signup", (req, res) => {
     const { username, email, password } = req.body;
     // * solo simulazione signup runtime, no override dei dati (fs module)

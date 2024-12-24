@@ -2,7 +2,7 @@ i, h1 {
     cursor: pointer;
 }
 
-i:not([class~="fa-magnifying-glass"]):not([class~="fa-xmark"]):hover, h1:hover {
+i:not([class~="fa-magnifying-glass"]):not([class~="fa-xmark"]):not[class~="fa-pen-to-square"]:hover, h1:hover {
     color: aliceblue;
     filter:drop-shadow(0 0 3px rgb(255, 255, 255));
 }
