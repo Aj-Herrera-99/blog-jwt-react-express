@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Post from "./Post";
+import PostForm from "./PostForm";
 
 function Main({ currUser }) {
     // states
@@ -42,44 +43,53 @@ function Main({ currUser }) {
     };
 
     return (
-        <main className="flex px-8 text-xl grow bg-stone-800">
-            {/* todo: barra di ricerca, filtri per autore, data, ordine */}
+        <main className="flex flex-wrap px-8 text-xl grow bg-stone-800">
+            {/* todo: completare il filtro */}
+            <div className="flex items-center w-full gap-2">
+                <i className="fa-solid fa-filter"></i>
+                <span>Filtra per</span>
+                <select
+                    onChange={(e) => {
+                        const selected = e.target.value;
+                        if (selected === "recentDate") {
+                            const postsOrdered = posts.toSorted(
+                                (a, b) => b.time - a.time
+                            );
+                            setPosts(postsOrdered);
+                        } else if (selected === "authorName") {
+                            console.log(selected)
+                            // todo: in posts.js (api), aggiungere key username per tenere traccia di user tramite username
+                            // const postsOrdered = posts.toSorted((a, b) => );
+                        }
+                    }}
+                >
+                    <option value=""></option>
+                    <option value="authorName">Autore</option>
+                    <option value="recentDate">Data</option>
+                </select>
+                <select>
+                    <option value=""></option>
+                    <option value="crescente">Crescente</option>
+                    <option value="decrescente">Decrescente</option>
+                </select>
+            </div>
 
             <section className="w-3/5">
-                {posts.map((post) => (
-                    <Post
-                        key={post.id}
-                        post={post}
-                        posts={posts}
-                        setPosts={setPosts}
-                        users={users}
-                        currUser={currUser}
-                    ></Post>
-                ))}
+                <div className="posts-wrapper">
+                    {posts.map((post) => (
+                        <Post
+                            key={post.id}
+                            post={post}
+                            posts={posts}
+                            setPosts={setPosts}
+                            users={users}
+                            currUser={currUser}
+                        ></Post>
+                    ))}
+                </div>
             </section>
-            {/* todo: creare componente PostForm */}
-            <section className="my-8 text-white grow">
-                <form
-                    onSubmit={submitNewPost}
-                    className="p-4 mx-16 rounded-xl bg-stone-700"
-                >
-                    <p>
-                        <label htmlFor="new-post" className="underline">
-                            What's on your mind
-                        </label>
-                    </p>
-                    <textarea
-                        id="new-post"
-                        rows={5}
-                        cols={50}
-                        className="p-2 my-2 rounded-md resize-none"
-                    ></textarea>
-                    <div className="text-end">
-                        <button className="py-1 tracking-widest uppercase rounded-2xl">
-                            Post
-                        </button>
-                    </div>
-                </form>
+            <section className="w-2/5 my-8 text-white">
+                <PostForm submitNewPost={submitNewPost} />
             </section>
         </main>
     );
